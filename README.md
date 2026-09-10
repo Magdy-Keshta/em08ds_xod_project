@@ -127,7 +127,7 @@ em08ds_xod_project/
 ├── requirements.txt          # Python dependencies
 ├── Dockerfile                # Docker image definition
 └── LICENSE                   # Open-source license
-
+```
 > 🎯 **Class balancing** was applied specifically to reduce bias toward over-represented items (e.g., common tools) and improve detection reliability for rarer, higher-risk items (e.g., firearms, ammunition).
 
 ---

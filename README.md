@@ -276,64 +276,51 @@ The application is fully **containerized with Docker** to solve dependency manag
 - [Docker](https://docs.docker.com/get-docker/) installed and running
 - *(Optional, for local/non-Docker development)*: Python 3.9+, Node.js 18+, pip, npm
 
-### Option A — Run with Docker (Recommended)
+### Option A — Run with Docker 
 
 ```bash
 # 1. Pull the image from Docker Hub
-docker pull <your-dockerhub-username>/x-guard-ai:latest
+docker pull magdykeshta/xod-webapp
 
 # 2. Run the container
-docker run -d -p 8080:8080 --name x-guard-ai <your-dockerhub-username>/x-guard-ai:latest
+docker run -d -p 5000:5000 --name xod-webapp magdykeshta/xod-webapp
 ```
 
 ### Option B — Build from Source
 
 ```bash
 # 1. Clone the repository
-git clone https://github.com/<your-username>/x-guard-ai.git
-cd x-guard-ai
+git clone https://github.com/Magdy-Keshta/em08ds_xod_project.git
+cd XOD_WebApp
 
 # 2. Build the Docker image locally
-docker build -t x-guard-ai .
+docker compose build .
 
 # 3. Run the container
-docker run -d -p 8080:8080 --name x-guard-ai x-guard-ai
+docker run -d -p 5000:5000 --name xod-webapp  xod-webapp 
 ```
 
 ### Option C — Manual Local Setup (Development)
 
 ```bash
-# 1. Clone the repository
-git clone https://github.com/<your-username>/x-guard-ai.git
-cd x-guard-ai
-
-# 2. Install Python dependencies (inference service)
-pip install -r requirements.txt
-
-# 3. Install Node.js dependencies (backend/frontend)
-npm install
-
-# 4. Start the application
-npm start
+# 1. Open the URL (Recommended)
+http://80.241.217.101:5000/
 ```
 
-> ⚠️ Replace `<your-dockerhub-username>` and `<your-username>` with your actual Docker Hub and GitHub identifiers before publishing.
+
 
 ### Option D — Explore the Research Notebook
 
-To review the original model training, EDA, and evaluation process, run the notebook in **JupyterLab** rather than opening it as a static file:
+To review the original model training, EDA, and evaluation process, run the notebook in **Colab** rather than opening it as a static file:
 
 ```bash
-# 1. Install JupyterLab (if not already installed)
-pip install jupyterlab
+# Just Open Colab and upload the Notebook after cloning this repository 
 
-# 2. Launch JupyterLab from the repository root
-jupyter lab
 ```
 
-Then open `X_Guard_AI_Real_Time_Edge_Threat_Detection_in_Security_X_ray_Images_Using_YOLOv.ipynb` from the JupyterLab file browser.
+Then open `X_Guard_AI_Real_Time_Edge_Threat_Detection_in_Security_X_ray_Images_Using_YOLOv.ipynb` from the Colab file browser.
 
-> 💡 Running it in JupyterLab (instead of just previewing on GitHub) lets you re-execute cells, inspect the confusion matrix/loss plots interactively, and re-run training or evaluation with your own dataset or hyperparameters.
+> 💡 Running it in Colab (instead of just previewing on GitHub) lets you re-execute cells, inspect the confusion matrix/loss plots interactively, however its not recommended to re-run training .  
 
 ---
 
@@ -357,10 +344,10 @@ Once the container (or local server) is running:
 
 The pre-built Docker image is published and available on Docker Hub:
 
-🔗 **[Docker Hub — x-guard-ai](https://hub.docker.com/r/<your-dockerhub-username>/x-guard-ai)**
+🔗 **[Docker Hub — xod-webapp](https://hub.docker.com/repository/docker/magdykeshta/xod-webapp)**
 
 ```bash
-docker pull <your-dockerhub-username>/x-guard-ai:latest
+docker pull magdykeshta/xod-webapp:v1
 ```
 
 ---
@@ -369,7 +356,7 @@ docker pull <your-dockerhub-username>/x-guard-ai:latest
 
 The application is hosted on a private server for demonstration purposes.
 
-🔗 **Live Demo:** `<insert-live-demo-url-here>`
+🔗 **Live Demo:** `http://80.241.217.101:5000/`
 
 > 🔐 Access may be restricted. Contact the author for a demo walkthrough or credentials.
 
@@ -381,7 +368,7 @@ The application is hosted on a private server for demonstration purposes.
 
 | Upload Interface | Detection Results | Threshold & Filtering |
 |:---:|:---:|:---:|
-| ![Upload](docs/screenshots/upload.png) | ![Detection](docs/screenshots/detection.png) | ![Filters](docs/screenshots/filters.png) |
+| ![Upload](docs/screenshots/upload.jpg) | ![Detection](docs/screenshots/detection.png) | ![Filters](docs/screenshots/filter.png) |
 
 ---
 
@@ -415,9 +402,9 @@ This project is licensed under the **MIT License** — see the [LICENSE](LICENSE
 
 **X-Guard AI** was developed as an academic research project, transitioned into a full-stack, production-oriented application.
 
-- 💻 GitHub: `<your-github-username>`
-- 📧 Contact: `<your-email>`
-- 🎓 Institution: EAU *(as referenced in the original research notebook)*
+- 💻 GitHub: `magdykeshta`
+- 📧 Contact: `magdy.keshta@gmail.com`
+- 🎓 Institution: Emirates Aviation University
 
 <div align="center">
 

@@ -1,0 +1,26 @@
+FROM python:3.11-slim
+
+WORKDIR /app
+
+# System dependencies required by Pillow/OpenCV
+RUN apt-get update && apt-get install -y \
+    libglib2.0-0 \
+    libgomp1 \
+    && rm -rf /var/lib/apt/lists/*
+
+COPY requirements.txt .
+
+RUN pip install --no-cache-dir -r requirements.txt
+
+COPY . .
+
+# Create models directory and make it writable
+RUN mkdir -p /app/models && chmod -R 777 /app/models
+ENV PYTHONUNBUFFERED=1
+ENV XOD_MODEL=best.pt
+ENV XOD_IMGSZ=640
+ENV XOD_DEFAULT_CONF=0.25
+
+EXPOSE 5000
+
+CMD ["python", "app.py"]

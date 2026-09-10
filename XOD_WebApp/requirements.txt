@@ -1,0 +1,20 @@
+# Web
+Flask>=3.0,<4.0
+
+# Model runtime (PyTorch path, as chosen)
+ultralytics>=8.2.0
+# torch/torchvision are pulled in by ultralytics. On a CPU-only shared host,
+# pip installs the CPU build automatically. If your host provides a wheel
+# index, prefer the CPU wheels to keep the footprint small.
+
+# Imaging (server side we only decode + resize; the browser does enhancement)
+Pillow>=10.0
+numpy>=1.24,<2.3
+
+# IMPORTANT for headless shared hosting:
+# Ultralytics depends on opencv-python, which needs system GL libraries that
+# are usually absent on DirectAdmin. After `pip install -r requirements.txt`,
+# swap it for the headless build (see DEPLOY.md):
+#     pip uninstall -y opencv-python
+#     pip install opencv-python-headless
+opencv-python-headless>=4.8

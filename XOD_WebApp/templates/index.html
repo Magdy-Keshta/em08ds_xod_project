@@ -1,0 +1,183 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>XOD — X-ray Object Detection</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <svg class="mark" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <path d="M3 8.5V3.5h5M16 3.5h5v5M21 15.5v5h-5M8 20.5H3v-5"
+              stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+        <circle cx="12" cy="12" r="2.4" fill="currentColor"/>
+      </svg>
+      <div class="brand-text">
+        <div class="title">XOD</div>
+        <div class="subtitle">X-ray object detection</div>
+      </div>
+    </div>
+
+    <div class="model-chip" id="modelChip" title="Active detection model">
+      <span class="dot" id="modelDot"></span>
+      <span class="mn" id="modelName">checking model…</span>
+      <span class="sep">·</span>
+      <span class="mono" id="modelClasses">—</span>
+    </div>
+
+    <div class="topbar-actions">
+      <label class="btn" for="imageInput">Upload X-ray</label>
+      <input id="imageInput" type="file" accept="image/*,.tif,.tiff" hidden>
+      <button class="btn ghost" id="detectBtn" disabled>Detect</button>
+      <button class="btn ghost" id="exportPngBtn" disabled>Export image</button>
+      <button class="btn ghost" id="exportJsonBtn" disabled>Export data</button>
+    </div>
+  </header>
+
+  <main class="body">
+    <section class="stage" id="stage">
+      <canvas id="view"></canvas>
+
+      <div class="stage-empty" id="stageEmpty">
+        <svg viewBox="0 0 48 48" fill="none" class="empty-icon" aria-hidden="true">
+          <rect x="6" y="10" width="36" height="28" rx="2" stroke="currentColor" stroke-width="1.5"/>
+          <path d="M6 30l9-8 7 6 6-7 14 12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <div class="drop-title">Drop an X-ray image here</div>
+        <div class="drop-sub">or use “Upload X-ray” above · JPG, PNG, TIFF</div>
+      </div>
+
+      <div class="stage-hud">
+        <span class="mono" id="hudZoom">100%</span>
+        <span class="hud-sep">·</span>
+        <span class="mono" id="hudPos">—</span>
+      </div>
+
+      <div class="stage-controls">
+        <button class="iconbtn" id="zoomOut" title="Zoom out" disabled>&minus;</button>
+        <button class="iconbtn" id="zoomFit" title="Fit to screen" disabled>&#9635;</button>
+        <button class="iconbtn" id="zoomIn" title="Zoom in" disabled>+</button>
+      </div>
+
+      <div class="stage-note">Screening aid — verify every result manually. Not a certified inspection device.</div>
+
+      <div class="stage-busy" id="stageBusy" hidden>
+        <div class="spinner"></div><span>Detecting…</span>
+      </div>
+    </section>
+
+    <aside class="rail">
+      <!-- DETECTIONS -->
+      <section class="rail-section">
+        <div class="section-head">
+          <span>Detections</span>
+          <span class="count-pill" id="detCount">0</span>
+        </div>
+
+        <div class="det-controls">
+          <label class="toggle">
+            <input type="checkbox" id="showBoxes" checked>
+            <span>Show boxes</span>
+          </label>
+          <div class="conf-row">
+            <span class="lbl">Min confidence</span>
+            <input type="range" id="confSlider" min="0" max="100" value="25">
+            <span class="mono" id="confVal">25%</span>
+          </div>
+        </div>
+
+        <div class="det-timing" id="detTiming" hidden>
+          <div class="t-row"><span>Inference</span><span class="mono" id="tInf">—</span></div>
+          <div class="t-row"><span>Pre + post</span><span class="mono" id="tPrePost">—</span></div>
+          <div class="t-row total"><span>Model total</span><span class="mono" id="tTotal">—</span></div>
+        </div>
+
+        <ul class="det-list" id="detList"></ul>
+        <div class="det-empty" id="detEmpty">No image analysed yet.</div>
+      </section>
+
+      <!-- CLASSES -->
+      <section class="rail-section" id="classSection" hidden>
+        <div class="section-head">
+          <span>Classes</span>
+          <button class="linkbtn" id="toggleAllClasses">toggle all</button>
+        </div>
+        <div class="class-legend" id="classLegend"></div>
+      </section>
+
+      <!-- ENHANCEMENT -->
+      <section class="rail-section">
+        <div class="section-head">
+          <span>Enhancement</span>
+          <button class="linkbtn" id="resetEnh">reset</button>
+        </div>
+
+        <div class="enh-grid">
+          <div class="slider-row">
+            <span class="lbl">Brightness</span>
+            <input type="range" id="brightness" min="-100" max="100" value="0">
+            <span class="mono" id="brightnessVal">0</span>
+          </div>
+          <div class="slider-row">
+            <span class="lbl">Contrast</span>
+            <input type="range" id="contrast" min="-100" max="100" value="0">
+            <span class="mono" id="contrastVal">0</span>
+          </div>
+          <div class="slider-row">
+            <span class="lbl">Gamma</span>
+            <input type="range" id="gamma" min="20" max="300" value="100">
+            <span class="mono" id="gammaVal">1.00</span>
+          </div>
+        </div>
+
+        <div class="chip-row">
+          <button class="chip" data-enh="invert">Negative</button>
+          <button class="chip" data-enh="sharpen">Sharpen</button>
+          <button class="chip" data-enh="edges">Edges</button>
+          <button class="chip" data-enh="equalize">Equalize</button>
+        </div>
+
+        <div class="palette-row">
+          <span class="lbl">False colour</span>
+          <div class="palette-swatches" id="paletteSwatches">
+            <button class="swatch sw-gray active" data-palette="gray" title="Grayscale"></button>
+            <button class="swatch sw-hot" data-palette="hot" title="Hot"></button>
+            <button class="swatch sw-jet" data-palette="jet" title="Rainbow"></button>
+            <button class="swatch sw-ice" data-palette="ice" title="Ice"></button>
+          </div>
+        </div>
+
+        <div class="hist-wrap">
+          <div class="hist-label">Luminance</div>
+          <canvas id="hist" width="300" height="56"></canvas>
+        </div>
+      </section>
+
+      <!-- MODEL ADMIN -->
+      <details class="rail-section model-admin" id="modelAdmin">
+        <summary class="section-head as-summary">
+          <span>Model</span><span class="chev" aria-hidden="true">▸</span>
+        </summary>
+        <div class="admin-body">
+          <p class="admin-hint">Upload trained YOLO weights (<code>.pt</code>). This replaces the active model for everyone using the site.</p>
+          <div class="admin-file">
+            <label class="btn small" for="modelInput">Choose .pt file</label>
+            <input id="modelInput" type="file" accept=".pt" hidden>
+            <span class="filename mono" id="modelFileName">no file</span>
+          </div>
+          <div class="admin-key-row" id="adminKeyRow" hidden>
+            <input type="password" id="adminKey" placeholder="Admin key" autocomplete="off">
+          </div>
+          <button class="btn small primary" id="uploadModelBtn" disabled>Upload &amp; activate</button>
+          <div class="admin-status" id="adminStatus"></div>
+          <p class="admin-note">Files over ~100&nbsp;MB upload more reliably placed directly into <code>models/</code> over SFTP.</p>
+        </div>
+      </details>
+    </aside>
+  </main>
+
+  <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+</body>
+</html>

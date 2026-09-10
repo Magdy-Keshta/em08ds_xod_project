@@ -1,0 +1,22 @@
+version: "3.9"
+
+services:
+  xod:
+    build: .
+    container_name: xod-webapp
+
+    ports:
+      - "5000:5000"
+
+    environment:
+      XOD_MODEL: best.pt
+      XOD_IMGSZ: 640
+      XOD_DEFAULT_CONF: 0.25
+      XOD_CONF_FLOOR: 0.10
+      XOD_MAX_UPLOAD_MB: 256
+      XOD_MAX_INFER_SIDE: 2048
+
+    volumes:
+      - ./models:/app/models
+
+    restart: unless-stopped

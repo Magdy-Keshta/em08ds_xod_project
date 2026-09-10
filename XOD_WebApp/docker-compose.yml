@@ -1,0 +1,16 @@
+services:
+  xod:
+    build: .
+    container_name: xod-webapp
+
+    ports:
+      - "5000:5000"
+
+    restart: unless-stopped
+
+    environment:
+      XOD_MODEL: best.pt
+
+    volumes:
+      - ./models:/app/models
+      - ./data:/app/data

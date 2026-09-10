@@ -104,6 +104,29 @@ data/
 │   └── test/
 └── data.yaml
 ```
+## 📂 Repository Structure
+
+```text
+em08ds_xod_project/
+│
+├── xod/                      # Research notebooks, training scripts, and YOLO11s experiments
+│
+├── XOD_WebApp/               # Production web application
+│   ├── backend/              # Python API and AI inference services
+│   ├── frontend/             # JavaScript user interface
+│   ├── models/               # Trained YOLO11s model weights
+│   └── assets/               # Static resources and application assets
+│
+├── docs/                     # Project documentation
+│   ├── screenshots/          # Web application screenshots
+│   ├── diagrams/             # Architecture and workflow diagrams
+│   ├── reports/              # Research reports and papers
+│   └── deployment/           # Docker and deployment guides
+│
+├── README.md                 # Project overview and documentation
+├── requirements.txt          # Python dependencies
+├── Dockerfile                # Docker image definition
+└── LICENSE                   # Open-source license
 
 > 🎯 **Class balancing** was applied specifically to reduce bias toward over-represented items (e.g., common tools) and improve detection reliability for rarer, higher-risk items (e.g., firearms, ammunition).
 
